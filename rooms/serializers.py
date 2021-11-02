@@ -9,5 +9,10 @@ class RoomSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Room
-        # fields = "__all__"
         fields = ("name", "price", "instant_book", "user")
+
+
+class BigRoomSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Room
+        fields = "__all__"
