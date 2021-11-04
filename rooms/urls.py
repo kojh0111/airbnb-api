@@ -2,6 +2,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.rooms_view),
-    path("<int:pk>/", views.SeeRoomView.as_view()),
+    path("", views.RoomsView.as_view()),
+    path("<int:pk>/", views.RoomView.as_view()),
 ]
