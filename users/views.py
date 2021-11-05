@@ -5,6 +5,7 @@ from rest_framework.views import APIView
 from rest_framework import status
 from .models import User
 from .serializers import ReadUserSerializer, WriteUserSerializer
+from rooms.serializers import RoomSerializer
 
 
 class MeView(APIView):
@@ -30,3 +31,13 @@ def user_detail(request, pk):
         return Response(ReadUserSerializer(user).data)
     except User.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+class FavsView(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        serializer = RoomSerializer(user.favs.all(), many=True).data
+        return Response(serializer)
