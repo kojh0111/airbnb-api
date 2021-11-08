@@ -16,8 +16,8 @@ class RoomsView(APIView):
         rooms = Room.objects.all()
         paginator = RoomPagination()
         results = paginator.paginate_queryset(rooms, request)
-        serializer = RoomSerializer(results, many=True).data
-        return paginator.get_paginated_response(serializer)
+        serializer = RoomSerializer(results, many=True, context={"request": request})
+        return paginator.get_paginated_response(serializer.data)
 
     def post(self, request):
         if not request.user.is_authenticated:
@@ -106,5 +106,5 @@ def room_search(request):
         rooms = Room.objects.all()
     paginator = RoomPagination()
     results = paginator.paginate_queryset(rooms, request)
-    serializer = RoomSerializer(results, many=True).data
-    return paginator.get_paginated_response(serializer)
+    serializer = RoomSerializer(results, many=True)
+    return paginator.get_paginated_response(serializer.data)
