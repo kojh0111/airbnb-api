@@ -4,15 +4,14 @@ from django.contrib.auth import authenticate
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
-from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.permissions import IsAdminUser, AllowAny
 from rest_framework import status
 from .models import User
-from rooms.models import Room
 from .serializers import UserSerializer
 from .permissions import IsSelf
 from rooms.serializers import RoomSerializer
+from rooms.models import Room
 
 
 class UserViewSet(ModelViewSet):
@@ -57,19 +56,16 @@ class UserViewSet(ModelViewSet):
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
-class FavsView(APIView):
-
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        user = request.user
+    @action(detail=True)
+    def favs(self, request, pk):
+        user = self.get_object()
         serializer = RoomSerializer(user.favs.all(), many=True).data
         return Response(serializer)
 
-    def put(self, request):
+    @favs.mapping.put
+    def toggle_favs(self, request, pk):
         pk = request.data.get("pk", None)
-        user = request.user
+        user = self.get_object()
         if pk:
             try:
                 room = Room.objects.get(pk=pk)
