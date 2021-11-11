@@ -44,15 +44,12 @@ class UserViewSet(ModelViewSet):
         else:
             return Response(status=status.HTTP_401_UNAUTHORIZED)
 
-
-class MeView(APIView):
-
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
+    @action(detail=False, permission_classes=IsAuthenticated)
+    def me(self, request):
         return Response(UserSerializer(request.user).data)
 
-    def put(self, request):
+    @me.mapping.put
+    def modify_me(self, request):
         serializer = UserSerializer(request.user, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
